@@ -2,8 +2,8 @@
 
 import gym
 import math
+import random
 import numpy as np
-from collections import deque
 import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
