@@ -9,26 +9,48 @@ class ActionNoise:
         pass
 
 
+# class OUNoise(ActionNoise):
+#     """ Ornstein-Uhlenbeck exploration noise process for temporally correlated noise """
+#
+#     def __init__(self, action_size, seed, mu=0., theta=.15, sigma=.2):
+#         self.mu = mu * np.ones(action_size)
+#         self.theta = theta
+#         self.sigma = sigma
+#         self.state = None
+#         random.seed(seed)
+#
+#     def reset(self):
+#         """Reset the internal state (= noise) to mean (mu)."""
+#         self.state = copy.copy(self.mu)
+#
+#     def sample(self):
+#         """Update internal state and return it as a noise sample."""
+#         # x = self.state
+#         # dx = self.theta * (self.mu - x) + self.sigma * np.array([random.random() for _ in range(len(x))])
+#         # self.state = x + dx
+#         return self.state
+
 class OUNoise(ActionNoise):
-    """ Ornstein-Uhlenbeck exploration noise process for temporally correlated noise """
-
-    def __init__(self, size, seed, mu=0., theta=.15, sigma=.2):
-        self.mu = mu * np.ones(size)
+    def __init__(self, mu, sigma=.2, theta=.15, dt=1e-2, x0=None):
         self.theta = theta
+        self.mu = mu
         self.sigma = sigma
-        self.state = None
-        random.seed(seed)
-
-    def reset(self):
-        """Reset the internal state (= noise) to mean (mu)."""
-        self.state = copy.copy(self.mu)
+        self.dt = dt
+        self.x0 = x0
+        self.x_prev = None
+        self.reset()
 
     def sample(self):
-        """Update internal state and return it as a noise sample."""
-        x = self.state
-        dx = self.theta * (self.mu - x) + self.sigma * np.array([random.random() for _ in range(len(x))])
-        self.state = x + dx
-        return self.state
+        x = self.x_prev + self.theta * (self.mu - self.x_prev) * self.dt + self.sigma * np.sqrt(self.dt) * np.random\
+            .normal(size=self.mu.shape)
+        self.x_prev = x
+        return x
+
+    def reset(self):
+        self.x_prev = self.x0 if self.x0 is not None else np.zeros_like(self.mu)
+
+    def __repr__(self):
+        return 'OrnsteinUhlenbeckActionNoise(mu={}, sigma={})'.format(self.mu, self.sigma)
 
 
 class AdaptiveNoise(ActionNoise):

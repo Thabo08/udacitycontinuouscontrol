@@ -8,12 +8,28 @@ from support import Experience
 
 # todo: Make this a system arg
 file_name = "/Users/thabo/Documents/code/personal/courses/Udacity/Reinforcement Learning/deep-reinforcement-learning/" \
-            "p2_continuous-control/Reacher.app"
+            "p2_continuous-control/Reacher 2.app"
 env = UnityEnvironment(file_name=file_name)
 
 # get the default brain
 brain_name = env.brain_names[0]
 brain = env.brains[brain_name]
+
+# reset the environment
+env_info = env.reset(train_mode=True)[brain_name]
+
+# number of agents in the environment
+print('Number of agents:', len(env_info.agents))
+
+# number of actions
+action_size = brain.vector_action_space_size
+print('Number of actions:', action_size)
+
+# examine the state space
+states = env_info.vector_observations
+state_size = states.shape[1]
+print('States look like:', states)
+print('States have length:', state_size)
 
 
 def step_tuple(env_info):
@@ -47,7 +63,7 @@ def ddpg(agent: ContinuousControlAgent, env: UnityEnvironment, num_episodes=2000
         :param target: The average target score the agent needs to achieve for optimal performance
         :param saved_model: The file path to save the model weights
     """
-
+    print("Training agent for max {} episodes. Target score to reach is {}".format(num_episodes, target))
     # collections to help keep track of the score
     scores_deque = deque(maxlen=100)
     scores = []
@@ -86,3 +102,48 @@ def ddpg(agent: ContinuousControlAgent, env: UnityEnvironment, num_episodes=2000
 
     print("Finished training " + "successfully!" if mean_score >= target else "unsuccessfully!")
     return scores, stats
+
+
+def run(agent_: ContinuousControlAgent, env_: UnityEnvironment, num_episodes=2000, max_time_steps=1000, target=30.,
+        saved_model="checkpoint.pth"):
+    try:
+        _, stats = ddpg(agent_, env_, num_episodes=num_episodes, max_time_steps=max_time_steps, target=target,
+                        saved_model=saved_model)
+        plot(stats)
+    finally:
+        # make sure the environment gets closed regardless of what happens
+        env_.close()
+
+
+def test(agent_: ContinuousControlAgent, filename):
+    agent_.local_actor_network().load_state_dict(torch.load(filename))
+
+    env_info = env.reset(train_mode=False)[brain_name]  # reset the environment
+    state = env_info.vector_observations[0]  # get the current state
+    score = 0  # initialize the score
+    while True:
+        action = agent_.act(state, .0)  # select an action
+        env_info = env.step(action)[brain_name]  # send the action to the environment
+        next_state = env_info.vector_observations[0]  # get the next state
+        reward = env_info.rewards[0]  # get the reward
+        done = env_info.local_done[0]  # see if episode has finished
+        score += reward  # update the score
+        state = next_state  # roll over the state to next time step
+        if done:  # exit loop if episode finished
+            break
+
+    print("Score: {}".format(score))
+
+    env.close()
+
+
+if __name__ == '__main__':
+    adaptive_noise = False
+    # agent = ContinuousControlAgent(state_size, action_size, random_seed=0, adaptive_noise=adaptive_noise,
+    #                                update_frequency=4)
+    # filename = "checkpoint-adaptive.pth" if adaptive_noise else "checkpoint-ornsteinuhlenbeck.pth"
+    # train_mode = True
+    # if train_mode:
+    #     run(agent, env, num_episodes=100, max_time_steps=500, target=1., saved_model=filename)
+    # else:
+    #     test(agent, filename)
