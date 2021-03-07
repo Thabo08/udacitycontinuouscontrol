@@ -1,6 +1,5 @@
 """ Implementation of the continuous control agent. The agent implements the Deep Deterministic Policy Gradient
  (DDPG) algorithm"""
-import tensorflow as tf
 from torch import optim
 
 import config
@@ -34,40 +33,17 @@ def soft_update(local_model, target_model):
         target_param.data.copy_(config.TAU * local_param.data + (1.0 - config.TAU) * target_param.data)
 
 
-def normalize(x, stats):
-    if stats is None:
-        return x
-    return (x - stats.mean) / (stats.std + 1e-8)
-
-
-def get_perturbed_actor_updates(actor, perturbed_actor, param_noise_stddev):
-    assert len(actor.vars) == len(perturbed_actor.vars)
-    assert len(actor.perturbable_vars) == len(perturbed_actor.perturbable_vars)
-
-    updates = []
-    for var, perturbed_var in zip(actor.vars, perturbed_actor.vars):
-        if var in actor.perturbable_vars:
-            updates.append(tf.assign(perturbed_var, var + tf.random_normal(tf.shape(var), mean=0.,
-                                                                           stddev=param_noise_stddev)))
-        else:
-            updates.append(tf.assign(perturbed_var, var))
-    assert len(updates) == len(actor.vars)
-    return tf.group(*updates)
-
-
 class ContinuousControlAgent:
     """ The agent that learns to interact with an environment using the DDPG algorithm """
-    def __init__(self, state_size, action_size, random_seed, adaptive_noise=False, update_frequency=10):
+    def __init__(self, state_size, action_size, random_seed, memory: ReplayBuffer, update_frequency=10):
         """
         Initialise the agent
         :param state_size: Dimension of the state space
         :param action_size: Dimension of the action space
         :param random_seed: Random seed
-        :param adaptive_noise: Flag of which noise policy to use
         """
         random.seed(random_seed)
 
-        self.adaptive_noise = adaptive_noise
         self.time_step = 0
         self.update_frequency = update_frequency
 
@@ -83,10 +59,10 @@ class ContinuousControlAgent:
                                            weight_decay=config.WEIGHT_DECAY)
 
         # Exploration noise process
-        self.noise = OUNoise(mu=np.zeros(action_size))
+        self.noise = OUNoise(action_size, 0)
 
         # Replay buffer
-        self.memory = ReplayBuffer(action_size, config.BUFFER_SIZE, config.BATCH_SIZE, random_seed)
+        self.memory = memory
 
         self.ready_to_learn = len(self.memory) > config.BATCH_SIZE
 

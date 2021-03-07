@@ -32,7 +32,7 @@ class Experience:
 class ReplayBuffer:
     """Fixed-size buffer to store experience tuples."""
 
-    def __init__(self, action_size: int, buffer_size: int, batch_size: int, seed: int):
+    def __init__(self, action_size: int, buffer_size: int, batch_size: int, random_seed: int):
         """ Initialize a ReplayBuffer object.
             :param buffer_size (int): maximum size of buffer
             :param batch_size (int): size of each training batch
@@ -41,7 +41,7 @@ class ReplayBuffer:
         self.memory = deque(maxlen=buffer_size)  # internal memory (deque)
         self.batch_size = batch_size
         self.experience = namedtuple("Experience", field_names=["state", "action", "reward", "next_state", "done"])
-        random.seed(seed)
+        random.seed(random_seed)
 
     def add(self, experience: Experience):
         """Add a new experience to memory."""

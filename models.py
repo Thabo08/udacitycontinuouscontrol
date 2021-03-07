@@ -47,48 +47,25 @@ class Model(nn.Module):
 
 
 class Actor(Model):
-    def __init__(self, name, state_size, action_size, random_seed, fc_units=256):
+    def __init__(self, name, state_size, action_size, random_seed, fc1_units=256, fc2_units=128):
         """
         Initialise Actor model (policy gradient function)
         :param fc_units: Number of nodes in the hidden layer
         """
-        super().__init__(name, state_size, action_size, random_seed, fc_units)
-        self.fc1 = nn.Linear(self.state_size, fc_units)
-        self.fc2 = nn.Linear(fc_units, self.action_size)
-        reset_parameters([self.fc1, self.fc2])
+        super().__init__(name, state_size, action_size, random_seed, fc1_units)
+        self.fc1 = nn.Linear(state_size, fc1_units)
+        self.fc2 = nn.Linear(fc1_units, fc2_units)
+        self.fc3 = nn.Linear(fc2_units, action_size)
+        reset_parameters([self.fc1, self.fc2, self.fc3])
         self.print_()
 
     def forward(self, state, action=None):
         """ Perform forward pass and map state to action """
         state = F.relu(self.fc1(state))
         state = F.relu(self.fc2(state))
+        state = F.relu(self.fc3(state))
         return torch.tanh(state)
 
-
-# class Critic(Model):
-#     def __init__(self, name, state_size, action_size, random_seed, fc1_units=256, fc2_units=256, fc3_units=128):
-#         """
-#         Initialise Critic model (value based function)
-#         :param fc1_units: Nodes in 1st hidden layer
-#         :param fc2_units: Nodes in 2nd hidden layer
-#         :param fc3_units: Nodes in 3rd hidden layer
-#         """
-#         super().__init__(name, state_size, action_size, random_seed, fc1_units, fc2_units, fc3_units)
-#         self.fc1 = nn.Linear(self.state_size, fc1_units)
-#         self.fc2 = nn.Linear(fc1_units + self.action_size, fc2_units)
-#         self.fc3 = nn.Linear(fc2_units, fc3_units)
-#         self.fc4 = nn.Linear(fc3_units, 1)
-#         reset_parameters([self.fc1, self.fc2, self.fc3, self.fc4])
-#         self.print_()
-#
-#     def forward(self, state, action=None):
-#         """ Perform forward pass and map state and action to Q values """
-#         assert action is not None, "Action cannot be none"
-#         xs = F.leaky_relu(self.fc1(state))
-#         x = torch.cat((xs, action), dim=1)
-#         x = F.leaky_relu(self.fc2(x))
-#         x = F.leaky_relu(self.fc3(x))
-#         return self.fc4(x)
 
 class Critic(Model):
     def __init__(self, name, state_size, action_size, random_seed, fc1_units=256, fc2_units=128):
@@ -99,8 +76,8 @@ class Critic(Model):
         :param fc3_units: Nodes in 3rd hidden layer
         """
         super().__init__(name, state_size, action_size, random_seed, fc1_units, fc2_units)
-        self.fc1 = nn.Linear(self.state_size, fc1_units)
-        self.fc2 = nn.Linear(fc1_units + self.action_size, fc2_units)
+        self.fc1 = nn.Linear(state_size, fc1_units)
+        self.fc2 = nn.Linear(fc1_units + action_size, fc2_units)
         self.fc3 = nn.Linear(fc2_units, 1)
         reset_parameters([self.fc1, self.fc2, self.fc3])
         self.print_()
