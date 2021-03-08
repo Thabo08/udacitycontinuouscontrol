@@ -177,7 +177,7 @@ if __name__ == '__main__':
     parser.add_argument("agents", choices=["single", "multi"], help="Number of agents to train")
     parser.add_argument("agentFile", help="The file to load the agent(s)")
     parser.add_argument("--model", default="checkpoint.pth", help="Path where the trained model should be saved")
-    parser.add_argument("--updateFrequency", default=20, help="Frequency with which to update models")
+    parser.add_argument("--updateFrequency", default=2, help="Frequency with which to update models")
     parser.add_argument("--mode", default="train", help="Mode describing whether to train or test")
 
     args = parser.parse_args()

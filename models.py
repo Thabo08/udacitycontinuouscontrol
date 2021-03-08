@@ -61,6 +61,7 @@ class Actor(Model):
 
     def forward(self, state, action=None):
         """ Perform forward pass and map state to action """
+        state = state.to(DEVICE)
         state = F.relu(self.fc1(state))
         state = F.relu(self.fc2(state))
         state = F.relu(self.fc3(state))
@@ -85,6 +86,7 @@ class Critic(Model):
     def forward(self, state, action=None):
         """ Perform forward pass and map state and action to Q values """
         assert action is not None, "Action cannot be none"
+        state = state.to(DEVICE)
         xs = F.leaky_relu(self.fc1(state))
         x = torch.cat((xs, action), dim=1)
         x = F.leaky_relu(self.fc2(x))
