@@ -184,6 +184,12 @@ if __name__ == '__main__':
 
     single_agent = args.agents == "single"
     env_settings = environment_settings(args.agentFile)
+    num_agents = env_settings["num_agents"]
+
+    if single_agent and num_agents > 1:
+        raise RuntimeError("Loaded incorrect single agent file")
+    if not single_agent and num_agents == 1:
+        raise RuntimeError("Loaded incorrect multi agent file")
 
     action_size = env_settings["action_size"]
     state_size = env_settings["state_size"]
