@@ -105,6 +105,7 @@ def ddpg(agent: ContinuousControlAgent, env_settings: dict, single_agent, num_ep
             if single_agent:
                 agent.step(Experience(states, actions, rewards, next_states, dones))
             else:
+                # randomly select 10 agents to train
                 for idx in random.sample(range(num_agents), 10):
                     agent.step(Experience(states[idx], actions[idx], rewards[idx], next_states[idx], dones[idx]))
             states = next_states
