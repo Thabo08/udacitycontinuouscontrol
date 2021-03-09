@@ -40,7 +40,7 @@ The agent, which implements the DDPG algorithm, can be found in the _agent.py_ f
 following key components:
 1. **Actor Model**: See above
 1. **Critic Model**: See above
-1. **Replay Buffer**: A container used to keep experiences from the agent's interaction with the environment. This buffer is used for sampling experiences in order to avoid correlation.
+1. **Replay Buffer**: A container used to keep experiences from the agent's interaction with the environment. This buffer is used for sampling experiences in order to avoid correlations between states.
 1. **Noise Object**: Implemented here using the **Ornstein-Uhlenbeck** algorithm, the noise object is used in introducing exploration by adding temporally correlated noise to the actions 
 
 The agent has the following high level functionalities, which enable it to learn from interactions:
