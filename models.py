@@ -50,9 +50,10 @@ class Actor(Model):
     def __init__(self, name, state_size, action_size, random_seed, fc1_units=256, fc2_units=128):
         """
         Initialise Actor model (policy gradient function)
-        :param fc_units: Number of nodes in the hidden layer
+        :param fc1_units: Nodes in 1st hidden layer
+        :param fc2_units: Nodes in 2nd hidden layer
         """
-        super().__init__(name, state_size, action_size, random_seed, fc1_units)
+        super().__init__(name, state_size, action_size, random_seed, fc1_units, fc2_units)
         self.fc1 = nn.Linear(state_size, fc1_units)
         self.fc2 = nn.Linear(fc1_units, fc2_units)
         self.fc3 = nn.Linear(fc2_units, action_size)
@@ -61,11 +62,9 @@ class Actor(Model):
 
     def forward(self, state, action=None):
         """ Perform forward pass and map state to action """
-        state = state.to(DEVICE)
         state = F.relu(self.fc1(state))
         state = F.relu(self.fc2(state))
-        state = F.relu(self.fc3(state))
-        return torch.tanh(state)
+        return torch.tanh(self.fc3(state))
 
 
 class Critic(Model):
@@ -74,7 +73,6 @@ class Critic(Model):
         Initialise Critic model (value based function)
         :param fc1_units: Nodes in 1st hidden layer
         :param fc2_units: Nodes in 2nd hidden layer
-        :param fc3_units: Nodes in 3rd hidden layer
         """
         super().__init__(name, state_size, action_size, random_seed, fc1_units, fc2_units)
         self.fc1 = nn.Linear(state_size, fc1_units)
@@ -86,7 +84,6 @@ class Critic(Model):
     def forward(self, state, action=None):
         """ Perform forward pass and map state and action to Q values """
         assert action is not None, "Action cannot be none"
-        state = state.to(DEVICE)
         xs = F.leaky_relu(self.fc1(state))
         x = torch.cat((xs, action), dim=1)
         x = F.leaky_relu(self.fc2(x))

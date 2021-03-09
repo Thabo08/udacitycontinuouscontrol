@@ -48,8 +48,8 @@ class ContinuousControlAgent:
         self.update_frequency = update_frequency
 
         # Initialise the Actor networks (local and target), including the Optimizer
-        self.actor_local = Actor("Actor: Local", state_size, action_size, random_seed)
-        self.actor_target = Actor("Actor: Target", state_size, action_size, random_seed)
+        self.actor_local = Actor("Actor: Local", state_size, action_size, random_seed).to(DEVICE)
+        self.actor_target = Actor("Actor: Target", state_size, action_size, random_seed).to(DEVICE)
         self.actor_optimizer = optim.Adam(self.actor_local.parameters(), lr=config.ACTOR_LR)
 
         # Initialise the Critic networks (local and target)
