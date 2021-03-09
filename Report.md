@@ -73,12 +73,12 @@ The agent has the following high level behaviour:
 The agent is trained in an episodic manner by doing the following per episode, until a target score is reached:
 1. Resets the environment states, and the agent noise
 1. Takes a number of steps 'through' the environment and does the following:
-  1. Takes an action based on the state (invokes the actor model to do this)
-  1. Collects an experience tuple from the taken action
-  1. Adds the collected experience to the memory buffer and performs the learning if enough samples were collected
-  1. Sets the current state to the state returned following the taken action   
-  1. Collects a reward based on the action taken (action returned by the actor model)
-  1. Completes an episode if a terminal state was reached
+1. Takes an action based on the state (invokes the actor model to do this)
+    1. Collects an experience tuple from the taken action
+    1. Adds the collected experience to the memory buffer and performs the learning if enough samples were collected
+    1. Sets the current state to the state returned following the taken action   
+    1. Collects a reward based on the action taken (action returned by the actor model)
+    1. Completes an episode if a terminal state was reached
 1. Evaluates the average score collected; continues if score is not reached, and completes the training if it was reached
 
 ### Results
