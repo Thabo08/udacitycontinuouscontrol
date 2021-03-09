@@ -77,10 +77,10 @@ the trained model weights must be saved when training and where they must be loa
 ### 6. Results
 The trainer was used to train both single and multi versions of the environment. The results are shown below:
 
-Version      | Target Score  | Episodes to target | Average Score |
------------- | ------------- | ------------------ | ------------- |
-Single | 30.0 | 371 | 30.04
-Multi | 30.0 | 97 | 30.08 
+Version      | Target Score  | Episodes to target | Average Score | Training Time |
+------------ | ------------- | ------------------ | ------------- | ------------- |
+Single | 30.0 | 371 | 30.04 | ~ 1 hr
+Multi | 30.0 | 97 | 30.08 | ~ 3 hr
 
 Below, are the plots of the rewards gained per episode as the agent learns. First shown are for the single agent, the multi agent version.
 
