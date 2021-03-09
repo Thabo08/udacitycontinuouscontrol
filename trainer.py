@@ -1,6 +1,5 @@
 """ Train the agent """
 
-
 from collections import deque
 import argparse
 import datetime
@@ -137,7 +136,8 @@ def ddpg(agent: ContinuousControlAgent, env_settings: dict, single_agent, num_ep
 def run(agent_: ContinuousControlAgent, env_settings: dict, single_agent: bool, num_episodes=2000,
         max_time_steps=1000, target=30., saved_model="checkpoint.pth"):
     try:
-        _, stats = ddpg(agent_, env_settings, single_agent, num_episodes=num_episodes, target=target, max_time_steps=max_time_steps,
+        _, stats = ddpg(agent_, env_settings, single_agent, num_episodes=num_episodes, target=target,
+                        max_time_steps=max_time_steps,
                         saved_model=saved_model)
         plot(stats)
     finally:
@@ -167,7 +167,8 @@ def test(agent_: ContinuousControlAgent, env_settings, single_agent, filename):
         if np.any(done):  # exit loop if episode finished
             break
 
-    print("Score for {} agent(s): {}".format(num_agents, score if single_agent else np.round(np.mean(score), 2)))
+    score_ = lambda x: np.round(x, 2)
+    print("Score for {} agent(s): {}".format(num_agents, score_(score) if single_agent else score_(np.mean(score))))
 
     env.close()
 
