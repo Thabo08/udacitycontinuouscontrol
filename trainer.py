@@ -167,7 +167,7 @@ def test(agent_: ContinuousControlAgent, env_settings, single_agent, filename):
         if np.any(done):  # exit loop if episode finished
             break
 
-    print("Score: {}".format(score))
+    print("Score for {} agent(s): {}".format(num_agents, score if single_agent else np.round(np.mean(score), 2)))
 
     env.close()
 
@@ -198,6 +198,6 @@ if __name__ == '__main__':
     agent = ContinuousControlAgent(state_size, action_size, 0, memory=memory, update_frequency=args.updateFrequency)
     train = args.mode == "train"
     if train:
-        run(agent, env_settings, single_agent, num_episodes=100, max_time_steps=500, target=3., saved_model=args.model)
+        run(agent, env_settings, single_agent, num_episodes=100, max_time_steps=500, target=30., saved_model=args.model)
     else:
         test(agent, env_settings, single_agent, filename=args.model)
