@@ -67,10 +67,10 @@ python trainer.py -h
 ```
 The line above gives a help print out of the high level parameters that can be passed to run the trainer
 ```
-python trainer.py <agents> <environement_file> --mode <mode> --model <saved_model>
+python trainer.py <agents> <environment_file> --mode <mode> --model <saved_model>
 ```
 The line above shows how to run the agent, where ```<agents>``` indicates how many agents to used (the options are single or multi),
-```<environement_file>``` is used to specify which environment file to load, guided by the choice of agents, ```<mode>```
+```<environment_file>``` is used to specify which environment file to load, guided by the choice of agents, ```<mode>```
 indicates which mode to run the trainer in, with options being trained or tested, lastly, ```<saved_model>``` specifies where
 the trained model weights must be saved when training and where they must be loaded from when testing.
 
