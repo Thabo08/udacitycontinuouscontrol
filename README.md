@@ -61,6 +61,15 @@ The packages required to run the _trainer.py_ script can be installed this way:
 ```
 pip install -r requirements.txt
 ```
+The links to download the environment for popular operating systems per version of the environment are as follows:
+
+Version      |    Mac OSX    |   Linux   | Windows 32-bit | Windows 64-bit |
+------------ | ------------- | --------- | -------------- | -------------- |
+Single (1 agent) | [Click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/one_agent/Reacher.app.zip) | [Click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/one_agent/Reacher_Linux.zip) | [Click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/one_agent/Reacher_Windows_x86.zip) | [Click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/one_agent/Reacher_Windows_x86_64.zip)
+Multi (20 agents)| [Click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher.app.zip) | [Click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Linux.zip) | [Click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Windows_x86.zip) | [Click here](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P2/Reacher/Reacher_Windows_x86_64.zip)
+
+Once downloaded, place the zip archive in the directory of your choice and decompress the file.
+
 The script is command line based and can be used in the following ways:
 ```commandline
 python trainer.py -h
@@ -73,6 +82,12 @@ The line above shows how to run the agent, where ```<agents>``` indicates how ma
 ```<environment_file>``` is used to specify which environment file to load, guided by the choice of agents, ```<mode>```
 indicates which mode to run the trainer in, with options being trained or tested, lastly, ```<saved_model>``` specifies where
 the trained model weights must be saved when training and where they must be loaded from when testing.
+
+See below as examples of running the script for single agent in train mode, and the multi agent in test mode:
+```commandline
+python trainer.py single Reacher.app --mode train --model checkpoint_single.pth
+python trainer.py multi Reacher.app --mode test --model checkpoint_multi.pth
+```
 
 ### 6. Results
 The trainer was used to train both single and multi versions of the environment. The results are shown below:
